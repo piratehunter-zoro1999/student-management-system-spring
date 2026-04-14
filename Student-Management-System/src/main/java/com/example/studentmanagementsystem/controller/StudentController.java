@@ -34,7 +34,11 @@ public class StudentController {
         Map<String,Object> response = new LinkedHashMap<>();
 
             response.put("status","success");
-            response.put("massage","students fetched successfully");
+            if(students.isEmpty()) {
+                response.put("massage","No students found!");
+            }else {
+                response.put("massage", "students fetched successfully");
+            }
             response.put("data",students);
             return ResponseEntity.ok(response);
 
