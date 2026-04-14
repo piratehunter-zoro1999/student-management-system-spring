@@ -3,9 +3,12 @@ package com.example.studentmanagementsystem.controller;
 import com.example.studentmanagementsystem.model.Student;
 import com.example.studentmanagementsystem.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping ("/students")
@@ -15,25 +18,61 @@ public class StudentController {
     private StudentService service;
 
     @PostMapping
-    public Student addStudent(@RequestBody Student s){
-        return service.addStudent(s);
+    public ResponseEntity<Map<String,Object>> addStudent(@RequestBody Student s){
+        Student saved= service.addStudent(s);
+        Map<String,Object> response = new LinkedHashMap<>();
+        response.put("status","success");
+        response.put("massage","student added successfully!");
+        response.put("data",saved);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public List<Student> getAllStudents(){
-        return service.getAllStudent();
+    public ResponseEntity<Map<String,Object>> getAllStudents(){
+        List<Student> students=service.getAllStudent();
+        Map<String,Object> response = new LinkedHashMap<>();
+
+            response.put("status","success");
+            response.put("massage","students fetched successfully");
+            response.put("data",students);
+            return ResponseEntity.ok(response);
+
     }
 
     @GetMapping("/{id}")
-    public Student getById(@PathVariable Long id){
-        return service.getStudentById(id);
+    public ResponseEntity<Map<String,Object>> getById(@PathVariable Long id){
+        Student s = service.getStudentById(id);
+        Map<String, Object> response = new LinkedHashMap<>();
+        if(s!=null) {
+            response.put("status", "success");
+            response.put("massage", "student found");
+            response.put("data",s);
+            return ResponseEntity.ok(response);
+        }else{
+            response.put("status", "fail");
+            response.put("massage", "student not found!");
+            response.put("data",null);
+            return ResponseEntity.status(404).body(response);
+        }
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id){
-        if(service.deleteStudent(id)){
-            return "student deleted successfully!";
+    public ResponseEntity<Map<String,Object>> delete(@PathVariable Long id){
+        boolean delete=service.deleteStudent(id);
+        Map<String,Object> response = new LinkedHashMap<>();
+
+        if(delete){
+           response.put("status","success");
+           response.put("massage","student deleted successfully");
+           response.put("data",null);
+           return ResponseEntity.ok(response);
+        }else{
+            response.put("status","fail");
+            response.put("massage","student not found!");
+            response.put("data",null);
+            return ResponseEntity.status(404).body(response);
         }
-        return "student not found!";
+
     }
 }
