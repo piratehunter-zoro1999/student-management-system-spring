@@ -2,6 +2,7 @@ package com.example.studentmanagementsystem.controller;
 
 import com.example.studentmanagementsystem.model.Student;
 import com.example.studentmanagementsystem.service.StudentService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class StudentController {
     private StudentService service;
 
     @PostMapping
-    public ResponseEntity<Map<String,Object>> addStudent(@RequestBody Student s){
+    public ResponseEntity<Map<String,Object>> addStudent(@Valid @RequestBody Student s){
         Student saved= service.addStudent(s);
         Map<String,Object> response = new LinkedHashMap<>();
         response.put("status","success");
