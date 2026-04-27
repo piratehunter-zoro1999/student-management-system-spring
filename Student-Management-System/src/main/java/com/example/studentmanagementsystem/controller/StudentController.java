@@ -2,12 +2,14 @@ package com.example.studentmanagementsystem.controller;
 
 import com.example.studentmanagementsystem.dto.StudentDTO;
 import com.example.studentmanagementsystem.dto.StudentResponseDTO;
+import com.example.studentmanagementsystem.mapper.StudentMapper;
 import com.example.studentmanagementsystem.model.Student;
 import com.example.studentmanagementsystem.service.StudentService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -21,17 +23,7 @@ public class StudentController {
     @Autowired
     private StudentService service;
 
-    // dto mapping method
-    private StudentResponseDTO mapToDTO(Student s){
-        StudentResponseDTO dto = new StudentResponseDTO();
 
-        dto.setId(s.getId());
-        dto.setName(s.getName());
-        dto.setProgram(s.getProgram());
-        dto.setRollNo(s.getRollNo());
-
-        return dto;
-    }
 
     @PostMapping
     public ResponseEntity<Map<String,Object>> addStudent(@Valid @RequestBody StudentDTO dto){
@@ -46,7 +38,7 @@ public class StudentController {
         Student saved= service.addStudent(s);
 
         // Entity -> responseDTO
-        StudentResponseDTO responseDTO = mapToDTO(saved);
+        StudentResponseDTO responseDTO = StudentMapper.toDTO(saved);
 
 
         Map<String,Object> response = new LinkedHashMap<>();
@@ -66,7 +58,7 @@ public class StudentController {
         // Entity -> responseDTO
         List<StudentResponseDTO> dtoList = new ArrayList<>();
         for(Student s : students){
-            StudentResponseDTO dto = mapToDTO(s);
+            StudentResponseDTO dto = StudentMapper.toDTO(s);
 
 
             dtoList.add(dto);
@@ -94,7 +86,7 @@ public class StudentController {
         Map<String, Object> response = new LinkedHashMap<>();
         if(s!=null) {
             // Entity-> ResponseDTO
-            StudentResponseDTO responseDTO = mapToDTO(s);
+            StudentResponseDTO responseDTO = StudentMapper.toDTO(s);
 
 
             response.put("status", "success");
