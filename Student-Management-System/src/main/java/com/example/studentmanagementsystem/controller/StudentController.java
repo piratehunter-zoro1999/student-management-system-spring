@@ -21,6 +21,18 @@ public class StudentController {
     @Autowired
     private StudentService service;
 
+    // dto mapping method
+    private StudentResponseDTO mapToDTO(Student s){
+        StudentResponseDTO dto = new StudentResponseDTO();
+
+        dto.setId(s.getId());
+        dto.setName(s.getName());
+        dto.setProgram(s.getProgram());
+        dto.setRollNo(s.getRollNo());
+
+        return dto;
+    }
+
     @PostMapping
     public ResponseEntity<Map<String,Object>> addStudent(@Valid @RequestBody StudentDTO dto){
 
@@ -34,11 +46,8 @@ public class StudentController {
         Student saved= service.addStudent(s);
 
         // Entity -> responseDTO
-        StudentResponseDTO responseDTO = new StudentResponseDTO();
-        responseDTO.setId(saved.getId());
-        responseDTO.setName(saved.getName());
-        responseDTO.setRollNo(saved.getRollNo());
-        responseDTO.setProgram(saved.getProgram());
+        StudentResponseDTO responseDTO = mapToDTO(saved);
+
 
         Map<String,Object> response = new LinkedHashMap<>();
         response.put("status","success");
@@ -57,11 +66,8 @@ public class StudentController {
         // Entity -> responseDTO
         List<StudentResponseDTO> dtoList = new ArrayList<>();
         for(Student s : students){
-            StudentResponseDTO dto = new StudentResponseDTO();
-            dto.setId(s.getId());
-            dto.setName(s.getName());
-            dto.setProgram(s.getProgram());
-            dto.setRollNo(s.getRollNo());
+            StudentResponseDTO dto = mapToDTO(s);
+
 
             dtoList.add(dto);
         }
@@ -88,11 +94,8 @@ public class StudentController {
         Map<String, Object> response = new LinkedHashMap<>();
         if(s!=null) {
             // Entity-> ResponseDTO
-            StudentResponseDTO responseDTO=new StudentResponseDTO();
-            responseDTO.setRollNo(s.getRollNo());
-            responseDTO.setName(s.getName());
-            responseDTO.setProgram(s.getProgram());
-            responseDTO.setId(s.getId());
+            StudentResponseDTO responseDTO = mapToDTO(s);
+
 
             response.put("status", "success");
             response.put("message", "student found");
