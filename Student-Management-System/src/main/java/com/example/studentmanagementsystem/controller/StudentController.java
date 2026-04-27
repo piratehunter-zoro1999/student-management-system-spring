@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +42,7 @@ public class StudentController {
 
         Map<String,Object> response = new LinkedHashMap<>();
         response.put("status","success");
-        response.put("massage","student added successfully!");
+        response.put("message","student added successfully!");
         response.put("data",responseDTO);
 
         return ResponseEntity.ok(response);
@@ -49,16 +50,31 @@ public class StudentController {
 
     @GetMapping
     public ResponseEntity<Map<String,Object>> getAllStudents(){
-        List<Student> students=service.getAllStudent();
+
+        // Call service
+        List<Student> students=service.getAllStudents();
+
+        // Entity -> responseDTO
+        List<StudentResponseDTO> dtoList = new ArrayList<>();
+        for(Student s : students){
+            StudentResponseDTO dto = new StudentResponseDTO();
+            dto.setId(s.getId());
+            dto.setName(s.getName());
+            dto.setProgram(s.getProgram());
+            dto.setRollNo(s.getRollNo());
+
+            dtoList.add(dto);
+        }
+
         Map<String,Object> response = new LinkedHashMap<>();
 
             response.put("status","success");
             if(students.isEmpty()) {
-                response.put("massage","No students found!");
+                response.put("message","No students found!");
             }else {
-                response.put("massage", "students fetched successfully");
+                response.put("message", "students fetched successfully");
             }
-            response.put("data",students);
+            response.put("data",dtoList); // dtoList loaded not Entity
             return ResponseEntity.ok(response);
 
     }
@@ -66,15 +82,25 @@ public class StudentController {
     @GetMapping("/{id}")
     public ResponseEntity<Map<String,Object>> getById(@PathVariable Long id){
         Student s = service.getStudentById(id);
+
+
+
         Map<String, Object> response = new LinkedHashMap<>();
         if(s!=null) {
+            // Entity-> ResponseDTO
+            StudentResponseDTO responseDTO=new StudentResponseDTO();
+            responseDTO.setRollNo(s.getRollNo());
+            responseDTO.setName(s.getName());
+            responseDTO.setProgram(s.getProgram());
+            responseDTO.setId(s.getId());
+
             response.put("status", "success");
-            response.put("massage", "student found");
-            response.put("data",s);
+            response.put("message", "student found");
+            response.put("data",responseDTO); // dto response instead of Entity
             return ResponseEntity.ok(response);
         }else{
             response.put("status", "fail");
-            response.put("massage", "student not found!");
+            response.put("message", "student not found!");
             response.put("data",null);
             return ResponseEntity.status(404).body(response);
         }
@@ -87,12 +113,12 @@ public class StudentController {
 
         if(delete){
            response.put("status","success");
-           response.put("massage","student deleted successfully");
+           response.put("message","student deleted successfully");
            response.put("data",null);
            return ResponseEntity.ok(response);
         }else{
             response.put("status","fail");
-            response.put("massage","student not found!");
+            response.put("message","student not found!");
             response.put("data",null);
             return ResponseEntity.status(404).body(response);
         }

@@ -16,7 +16,7 @@ public class StudentService {
     public Student addStudent(Student s){
         return repo.save(s);
     }
-    public List<Student> getAllStudent(){
+    public List<Student> getAllStudents(){
         return repo.findAll();
     }
     public Student getStudentById(Long id){
