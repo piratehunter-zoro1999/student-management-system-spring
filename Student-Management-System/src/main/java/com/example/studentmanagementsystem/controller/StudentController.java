@@ -1,6 +1,7 @@
 package com.example.studentmanagementsystem.controller;
 
 import com.example.studentmanagementsystem.dto.StudentDTO;
+import com.example.studentmanagementsystem.dto.StudentResponseDTO;
 import com.example.studentmanagementsystem.model.Student;
 import com.example.studentmanagementsystem.service.StudentService;
 import jakarta.validation.Valid;
@@ -30,10 +31,18 @@ public class StudentController {
 
         // Call service
         Student saved= service.addStudent(s);
+
+        // Entity -> responseDTO
+        StudentResponseDTO responseDTO = new StudentResponseDTO();
+        responseDTO.setId(saved.getId());
+        responseDTO.setName(saved.getName());
+        responseDTO.setRollNo(saved.getRollNo());
+        responseDTO.setProgram(saved.getProgram());
+
         Map<String,Object> response = new LinkedHashMap<>();
         response.put("status","success");
         response.put("massage","student added successfully!");
-        response.put("data",saved);
+        response.put("data",responseDTO);
 
         return ResponseEntity.ok(response);
     }
