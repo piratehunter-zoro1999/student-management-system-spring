@@ -1,5 +1,6 @@
 package com.example.studentmanagementsystem.controller;
 
+import com.example.studentmanagementsystem.dto.StudentDTO;
 import com.example.studentmanagementsystem.model.Student;
 import com.example.studentmanagementsystem.service.StudentService;
 import jakarta.validation.Valid;
@@ -19,7 +20,15 @@ public class StudentController {
     private StudentService service;
 
     @PostMapping
-    public ResponseEntity<Map<String,Object>> addStudent(@Valid @RequestBody Student s){
+    public ResponseEntity<Map<String,Object>> addStudent(@Valid @RequestBody StudentDTO dto){
+
+        //DTO -> Entity conversion
+        Student s = new Student();
+        s.setName(dto.getName());
+        s.setRollNo(dto.getRollNo());
+        s.setProgram(dto.getProgram());
+
+        // Call service
         Student saved= service.addStudent(s);
         Map<String,Object> response = new LinkedHashMap<>();
         response.put("status","success");
