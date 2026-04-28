@@ -15,7 +15,14 @@ public class StudentService {
     @Autowired
     private StudentRepository repo;
 
-    public Student addStudent(Student s){
+    public Student addStudent(StudentDTO dto){
+
+        //DTO -> Entity conversion
+        Student s = new Student();
+        s.setName(dto.getName());
+        s.setRollNo(dto.getRollNo());
+        s.setProgram(dto.getProgram());
+
         return repo.save(s);
     }
     public List<Student> getAllStudents(){

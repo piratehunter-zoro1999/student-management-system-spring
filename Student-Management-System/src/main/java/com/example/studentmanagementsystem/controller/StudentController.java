@@ -28,14 +28,10 @@ public class StudentController {
     @PostMapping
     public ResponseEntity<Map<String,Object>> addStudent(@Valid @RequestBody StudentDTO dto){
 
-        //DTO -> Entity conversion
-        Student s = new Student();
-        s.setName(dto.getName());
-        s.setRollNo(dto.getRollNo());
-        s.setProgram(dto.getProgram());
+
 
         // Call service
-        Student saved= service.addStudent(s);
+        Student saved= service.addStudent(dto);
 
         // Entity -> responseDTO
         StudentResponseDTO responseDTO = StudentMapper.toDTO(saved);
