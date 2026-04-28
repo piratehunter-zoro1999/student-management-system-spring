@@ -119,4 +119,30 @@ public class StudentController {
         }
 
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<Map<String,Object>> updateStudent(
+            @PathVariable Long id,
+            @Valid @RequestBody StudentDTO dto){
+
+        Student update= service.updateStudent(id,dto);
+        Map<String,Object> response = new LinkedHashMap<>();
+
+        if(update != null){
+            StudentResponseDTO responseDTO = StudentMapper.toDTO(update);
+
+            response.put("status","sucsess");
+            response.put("message","Student updated successfully");
+            response.put("data",responseDTO);
+
+            return ResponseEntity.ok(response);
+        }else{
+            response.put("status","fail");
+            response.put("message","student not found!");
+            response.put("data",null);
+
+            return ResponseEntity.status(404).body(response);
+        }
+
+    }
+
 }

@@ -1,9 +1,11 @@
 package com.example.studentmanagementsystem.service;
 
+import com.example.studentmanagementsystem.dto.StudentDTO;
 import com.example.studentmanagementsystem.model.Student;
 import com.example.studentmanagementsystem.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 
 import java.util.List;
@@ -28,6 +30,19 @@ public class StudentService {
             return true;
         }
         return false;
+    }
+    public Student updateStudent(Long id , StudentDTO dto){
+        Student existing = repo.findById(id).orElse(null);
+
+        if (existing == null) {
+            return null;
+        }
+
+         existing.setName(dto.getName());
+         existing.setRollNo(dto.getRollNo());
+         existing.setProgram(dto.getProgram());
+
+         return repo.save(existing);
     }
 
 }
