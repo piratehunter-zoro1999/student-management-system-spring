@@ -52,4 +52,8 @@ public class StudentService {
          return repo.save(existing);
     }
 
+    public List<Student> searchByName(String name){
+        return repo.findByNameContainingIgnoreCase(name);
+    }
+
 }

@@ -6,6 +6,7 @@ import com.example.studentmanagementsystem.mapper.StudentMapper;
 import com.example.studentmanagementsystem.model.Student;
 import com.example.studentmanagementsystem.service.StudentService;
 import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -139,6 +140,31 @@ public class StudentController {
             return ResponseEntity.status(404).body(response);
         }
 
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Map<String,Object>> searchStudent(@RequestParam String name){
+
+         List<Student> students = service.searchByName(name);
+
+         List<StudentResponseDTO> dtoList = new ArrayList<>();
+
+         for(Student s : students ){
+             dtoList.add(StudentMapper.toDTO(s));
+         }
+
+         Map<String,Object> response = new LinkedHashMap<>();
+
+         response.put("status","success");
+
+         if(students.isEmpty()){
+             response.put("message","students not found!");
+         }else{
+             response.put("message","students fetched successfully");
+         }
+         response.put("data",dtoList);
+
+         return ResponseEntity.ok(response);
     }
 
 }
