@@ -173,6 +173,14 @@ public class StudentController {
             @RequestParam int page,
             @RequestParam int size){
 
+        if(page < 0 || size < 0){
+            Map<String,Object> response = new LinkedHashMap<>();
+            response.put("status","fail");
+            response.put("message","invalid page or size");
+            response.put("data",null);
+
+            return ResponseEntity.badRequest().body(response);
+        }
         Page<Student> studentPage = service.getStudentsWithPagination(page,size);
 
         List<StudentResponseDTO> dtoList = new ArrayList<>();
