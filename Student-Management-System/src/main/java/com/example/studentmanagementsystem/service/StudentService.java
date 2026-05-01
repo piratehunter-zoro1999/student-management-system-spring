@@ -4,6 +4,9 @@ import com.example.studentmanagementsystem.dto.StudentDTO;
 import com.example.studentmanagementsystem.model.Student;
 import com.example.studentmanagementsystem.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -55,5 +58,10 @@ public class StudentService {
     public List<Student> searchByName(String name){
         return repo.findByNameContainingIgnoreCase(name);
     }
+    public Page<Student> getStudentsWithPagination(int page,int size){
 
+        Pageable pageable = PageRequest.of(page,size);
+
+        return repo.findAll(pageable);
+    }
 }

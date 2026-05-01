@@ -8,6 +8,7 @@ import com.example.studentmanagementsystem.service.StudentService;
 import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -165,6 +166,41 @@ public class StudentController {
          response.put("data",dtoList);
 
          return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/page")
+    public ResponseEntity<Map<String,Object>> getStudentsWithPagination(
+            @RequestParam int page,
+            @RequestParam int size){
+
+        Page<Student> studentPage = service.getStudentsWithPagination(page,size);
+
+        List<StudentResponseDTO> dtoList = new ArrayList<>();
+
+        for(Student s : studentPage.getContent()){
+            dtoList.add(StudentMapper.toDTO(s));
+        }
+
+        Map<String,Object> response = new LinkedHashMap<>();
+
+        response.put("status","success");
+
+        response.put("message",
+                studentPage.getContent().isEmpty()?"students not found!"
+                        :"students fetched successfully");
+        //data empty or not
+        response.put("data",dtoList);
+
+        // pagination info (always present)
+
+        response.put("currentPage",studentPage.getNumber());
+        response.put("pageSize",studentPage.getSize());
+        response.put("totalItems",studentPage.getTotalPages());
+        response.put("totalElement",studentPage.getNumberOfElements());
+
+        return ResponseEntity.ok(response);
+
+
     }
 
 }
