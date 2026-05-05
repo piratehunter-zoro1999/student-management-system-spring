@@ -3,20 +3,22 @@ package com.example.studentmanagementsystem.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
+import java.security.Key;
 import java.util.Date;
 
 public class JwtUtil {
 
-    private final String SECRET_KEY = "mysecretkey";
+    private final Key SECRET_KEY = Keys.hmacShaKeyFor("mysecretkeymysecretkeymysecretkey".getBytes());
 
     // Generate token
     public String generateToken(String username){
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 100 * 60 * 60)) // 1 hour
-                .signWith(SignatureAlgorithm.HS256,SECRET_KEY)
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour
+                .signWith(SECRET_KEY)
                 .compact();
     }
 
@@ -27,8 +29,9 @@ public class JwtUtil {
 
     //Extract all claims
     private Claims extractClaims(String token) {
-        return Jwts.parser()
+        return Jwts.parserBuilder()
                 .setSigningKey(SECRET_KEY)
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
