@@ -159,7 +159,7 @@ public class StudentController {
         if(update != null){
             StudentResponseDTO responseDTO = StudentMapper.toDTO(update);
 
-            response.put("status","sucsess");
+            response.put("status","success");
             response.put("message","Student updated successfully");
             response.put("data",responseDTO);
 
@@ -241,7 +241,7 @@ public class StudentController {
 
         response.put("currentPage",studentPage.getNumber());
         response.put("pageSize",studentPage.getSize());
-        response.put("totalItems",studentPage.getTotalPages());
+        response.put("totalPages",studentPage.getTotalPages());
         response.put("totalElement",studentPage.getNumberOfElements());
 
         return ResponseEntity.ok(response);
