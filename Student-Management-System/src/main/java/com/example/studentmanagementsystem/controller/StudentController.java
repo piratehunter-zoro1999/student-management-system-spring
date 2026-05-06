@@ -8,6 +8,7 @@ import com.example.studentmanagementsystem.security.JwtUtil;
 import com.example.studentmanagementsystem.service.StudentService;
 import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;
+import org.aspectj.apache.bcel.classfile.annotation.RuntimeInvisAnnos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -22,16 +23,31 @@ import java.util.Map;
 @RestController
 @RequestMapping ("/students")
 public class StudentController {
+    private void validateJwt(String authHeader){
+        JwtUtil jwtutil = new JwtUtil();
 
+        if(authHeader == null || !authHeader.startsWith("Bearer ")){
+            throw new RuntimeException("Missing or invalid Authorization header");
+        }
+
+        String token = authHeader.substring(7);
+        String username = jwtutil.extractUsername(token);
+
+        if(!jwtutil.validateToken(token,username)){
+             throw new RuntimeException("Invalid or expired token");
+        }
+    }
     @Autowired
     private StudentService service;
 
 
 
     @PostMapping
-    public ResponseEntity<Map<String,Object>> addStudent(@Valid @RequestBody StudentDTO dto){
+    public ResponseEntity<Map<String,Object>> addStudent(
+            @RequestHeader("Authorization") String authHeader,
+            @Valid @RequestBody StudentDTO dto){
 
-
+        validateJwt(authHeader); // Auth check
 
         // Call service
         Student saved= service.addStudent(dto);
@@ -52,13 +68,7 @@ public class StudentController {
     public ResponseEntity<Map<String,Object>> getAllStudents(
             @RequestHeader("Authorization") String authHeader){
 
-        String token = authHeader.substring(7);
-
-        JwtUtil jwtutil = new JwtUtil();
-        String username =  jwtutil.extractUsername(token);
-        if(!jwtutil.validateToken(token,username)){
-            throw new RuntimeException("invalid token");
-        }
+        validateJwt(authHeader); // Auth check
 
         // Call service
         List<Student> students=service.getAllStudents();
@@ -86,10 +96,13 @@ public class StudentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Map<String,Object>> getById(@PathVariable Long id){
+    public ResponseEntity<Map<String,Object>> getById(
+            @RequestHeader("Authorization") String authHeader,
+            @PathVariable Long id){
+
+        validateJwt(authHeader); // Auth check
+
         Student s = service.getStudentById(id);
-
-
 
         Map<String, Object> response = new LinkedHashMap<>();
         if(s!=null) {
@@ -110,7 +123,12 @@ public class StudentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String,Object>> delete(@PathVariable Long id){
+    public ResponseEntity<Map<String,Object>> delete(
+            @RequestHeader("Authorization") String authHeader,
+            @PathVariable Long id){
+
+        validateJwt(authHeader); // Auth check
+
         boolean delete=service.deleteStudent(id);
         Map<String,Object> response = new LinkedHashMap<>();
 
@@ -129,8 +147,11 @@ public class StudentController {
     }
     @PutMapping("/{id}")
     public ResponseEntity<Map<String,Object>> updateStudent(
+            @RequestHeader("Authorization") String authHeader,
             @PathVariable Long id,
             @Valid @RequestBody StudentDTO dto){
+
+        validateJwt(authHeader); // Auth check
 
         Student update= service.updateStudent(id,dto);
         Map<String,Object> response = new LinkedHashMap<>();
@@ -154,7 +175,11 @@ public class StudentController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Map<String,Object>> searchStudent(@RequestParam String name){
+    public ResponseEntity<Map<String,Object>> searchStudent(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestParam String name){
+        // Auth check
+        validateJwt(authHeader);
 
          List<Student> students = service.searchByName(name);
 
@@ -180,8 +205,11 @@ public class StudentController {
 
     @GetMapping("/page")
     public ResponseEntity<Map<String,Object>> getStudentsWithPagination(
+            @RequestHeader("Authorization") String authHeader,
             @RequestParam int page,
             @RequestParam int size){
+        // Auth check
+        validateJwt(authHeader);
 
         if(page < 0 || size < 0){
             Map<String,Object> response = new LinkedHashMap<>();
