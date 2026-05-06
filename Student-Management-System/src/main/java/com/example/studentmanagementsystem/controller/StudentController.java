@@ -4,6 +4,7 @@ import com.example.studentmanagementsystem.dto.StudentDTO;
 import com.example.studentmanagementsystem.dto.StudentResponseDTO;
 import com.example.studentmanagementsystem.mapper.StudentMapper;
 import com.example.studentmanagementsystem.model.Student;
+import com.example.studentmanagementsystem.security.JwtUtil;
 import com.example.studentmanagementsystem.service.StudentService;
 import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;
@@ -48,7 +49,16 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<Map<String,Object>> getAllStudents(){
+    public ResponseEntity<Map<String,Object>> getAllStudents(
+            @RequestHeader("Authorization") String authHeader){
+
+        String token = authHeader.substring(7);
+
+        JwtUtil jwtutil = new JwtUtil();
+        String username =  jwtutil.extractUsername(token);
+        if(!jwtutil.validateToken(token,username)){
+            throw new RuntimeException("invalid token");
+        }
 
         // Call service
         List<Student> students=service.getAllStudents();
