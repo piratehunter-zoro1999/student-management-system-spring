@@ -35,7 +35,7 @@ public class StudentController {
 
     @PostMapping
     public ResponseEntity<Map<String,Object>> addStudent(
-            @RequestHeader("Authorization") String authHeader,
+            @RequestHeader(value ="Authorization", required = false) String authHeader,
             @Valid @RequestBody StudentDTO dto){
 
         jwtService.validateToken(authHeader); // Auth check
@@ -57,7 +57,7 @@ public class StudentController {
 
     @GetMapping
     public ResponseEntity<Map<String,Object>> getAllStudents(
-            @RequestHeader("Authorization") String authHeader){
+            @RequestHeader(value ="Authorization", required = false) String authHeader){
 
         jwtService.validateToken(authHeader); // Auth check
 
@@ -88,7 +88,7 @@ public class StudentController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Map<String,Object>> getById(
-            @RequestHeader("Authorization") String authHeader,
+            @RequestHeader(value="Authorization",required = false) String authHeader,
             @PathVariable Long id){
 
         jwtService.validateToken(authHeader); // Auth check
@@ -115,7 +115,7 @@ public class StudentController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String,Object>> delete(
-            @RequestHeader("Authorization") String authHeader,
+            @RequestHeader(value="Authorization",required = false) String authHeader,
             @PathVariable Long id){
 
         jwtService.validateToken(authHeader); // Auth check
@@ -138,7 +138,7 @@ public class StudentController {
     }
     @PutMapping("/{id}")
     public ResponseEntity<Map<String,Object>> updateStudent(
-            @RequestHeader("Authorization") String authHeader,
+            @RequestHeader(value="Authorization",required = false) String authHeader,
             @PathVariable Long id,
             @Valid @RequestBody StudentDTO dto){
 
@@ -167,7 +167,7 @@ public class StudentController {
 
     @GetMapping("/search")
     public ResponseEntity<Map<String,Object>> searchStudent(
-            @RequestHeader("Authorization") String authHeader,
+            @RequestHeader(value="Authorization",required = false) String authHeader,
             @RequestParam String name){
         // Auth check
         jwtService.validateToken(authHeader);
@@ -196,7 +196,7 @@ public class StudentController {
 
     @GetMapping("/page")
     public ResponseEntity<Map<String,Object>> getStudentsWithPagination(
-            @RequestHeader("Authorization") String authHeader,
+            @RequestHeader(value="Authorization",required = false) String authHeader,
             @RequestParam int page,
             @RequestParam int size){
         // Auth check
