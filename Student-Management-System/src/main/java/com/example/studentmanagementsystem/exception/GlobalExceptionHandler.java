@@ -1,8 +1,10 @@
 package com.example.studentmanagementsystem.exception;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.naming.AuthenticationException;
 import java.util.*;
 
 @RestControllerAdvice
@@ -24,5 +26,16 @@ public class GlobalExceptionHandler {
         response.put("errors", errors);
 
         return response;
+    }
+
+    @ExceptionHandler(JwtAuthenticationException.class)
+    public ResponseEntity< Map<String,Object>> handleJwtException(
+            JwtAuthenticationException ex){
+        Map<String,Object> response = new LinkedHashMap<>();
+        response.put("status","fail");
+        response.put("message",ex.getMessage());
+        response.put("data",null);
+
+        return ResponseEntity.status(401).body(response);
     }
 }
