@@ -4,6 +4,7 @@ import com.example.studentmanagementsystem.dto.StudentDTO;
 import com.example.studentmanagementsystem.dto.StudentResponseDTO;
 import com.example.studentmanagementsystem.mapper.StudentMapper;
 import com.example.studentmanagementsystem.model.Student;
+import com.example.studentmanagementsystem.security.JwtService;
 import com.example.studentmanagementsystem.security.JwtUtil;
 import com.example.studentmanagementsystem.service.StudentService;
 import jakarta.validation.Valid;
@@ -23,23 +24,13 @@ import java.util.Map;
 @RestController
 @RequestMapping ("/students")
 public class StudentController {
-    private void validateJwt(String authHeader){
-        JwtUtil jwtutil = new JwtUtil();
 
-        if(authHeader == null || !authHeader.startsWith("Bearer ")){
-            throw new RuntimeException("Missing or invalid Authorization header");
-        }
 
-        String token = authHeader.substring(7);
-        String username = jwtutil.extractUsername(token);
-
-        if(!jwtutil.validateToken(token,username)){
-             throw new RuntimeException("Invalid or expired token");
-        }
-    }
     @Autowired
     private StudentService service;
 
+    @Autowired
+    private JwtService jwtService;
 
 
     @PostMapping
@@ -47,7 +38,7 @@ public class StudentController {
             @RequestHeader("Authorization") String authHeader,
             @Valid @RequestBody StudentDTO dto){
 
-        validateJwt(authHeader); // Auth check
+        jwtService.validateToken(authHeader); // Auth check
 
         // Call service
         Student saved= service.addStudent(dto);
@@ -68,7 +59,7 @@ public class StudentController {
     public ResponseEntity<Map<String,Object>> getAllStudents(
             @RequestHeader("Authorization") String authHeader){
 
-        validateJwt(authHeader); // Auth check
+        jwtService.validateToken(authHeader); // Auth check
 
         // Call service
         List<Student> students=service.getAllStudents();
@@ -100,7 +91,7 @@ public class StudentController {
             @RequestHeader("Authorization") String authHeader,
             @PathVariable Long id){
 
-        validateJwt(authHeader); // Auth check
+        jwtService.validateToken(authHeader); // Auth check
 
         Student s = service.getStudentById(id);
 
@@ -127,7 +118,7 @@ public class StudentController {
             @RequestHeader("Authorization") String authHeader,
             @PathVariable Long id){
 
-        validateJwt(authHeader); // Auth check
+        jwtService.validateToken(authHeader); // Auth check
 
         boolean delete=service.deleteStudent(id);
         Map<String,Object> response = new LinkedHashMap<>();
@@ -151,7 +142,7 @@ public class StudentController {
             @PathVariable Long id,
             @Valid @RequestBody StudentDTO dto){
 
-        validateJwt(authHeader); // Auth check
+        jwtService.validateToken(authHeader); // Auth check
 
         Student update= service.updateStudent(id,dto);
         Map<String,Object> response = new LinkedHashMap<>();
@@ -179,7 +170,7 @@ public class StudentController {
             @RequestHeader("Authorization") String authHeader,
             @RequestParam String name){
         // Auth check
-        validateJwt(authHeader);
+        jwtService.validateToken(authHeader);
 
          List<Student> students = service.searchByName(name);
 
@@ -209,7 +200,7 @@ public class StudentController {
             @RequestParam int page,
             @RequestParam int size){
         // Auth check
-        validateJwt(authHeader);
+        jwtService.validateToken(authHeader);
 
         if(page < 0 || size < 0){
             Map<String,Object> response = new LinkedHashMap<>();
