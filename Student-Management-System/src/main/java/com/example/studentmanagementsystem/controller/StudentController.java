@@ -35,10 +35,8 @@ public class StudentController {
 
     @PostMapping
     public ResponseEntity<Map<String,Object>> addStudent(
-            @RequestHeader(value ="Authorization", required = false) String authHeader,
-            @Valid @RequestBody StudentDTO dto){
 
-        jwtService.validateToken(authHeader); // Auth check
+            @Valid @RequestBody StudentDTO dto){
 
         // Call service
         Student saved= service.addStudent(dto);
@@ -56,10 +54,9 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<Map<String,Object>> getAllStudents(
-            @RequestHeader(value ="Authorization", required = false) String authHeader){
+    public ResponseEntity<Map<String,Object>> getAllStudents(){
 
-        jwtService.validateToken(authHeader); // Auth check
+
 
         // Call service
         List<Student> students=service.getAllStudents();
@@ -87,11 +84,10 @@ public class StudentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Map<String,Object>> getById(
-            @RequestHeader(value="Authorization",required = false) String authHeader,
-            @PathVariable Long id){
+    public ResponseEntity<Map<String,Object>> getById(@PathVariable Long id){
 
-        jwtService.validateToken(authHeader); // Auth check
+
+
 
         Student s = service.getStudentById(id);
 
@@ -114,11 +110,9 @@ public class StudentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String,Object>> delete(
-            @RequestHeader(value="Authorization",required = false) String authHeader,
-            @PathVariable Long id){
+    public ResponseEntity<Map<String,Object>> delete(@PathVariable Long id){
 
-        jwtService.validateToken(authHeader); // Auth check
+
 
         boolean delete=service.deleteStudent(id);
         Map<String,Object> response = new LinkedHashMap<>();
@@ -138,11 +132,9 @@ public class StudentController {
     }
     @PutMapping("/{id}")
     public ResponseEntity<Map<String,Object>> updateStudent(
-            @RequestHeader(value="Authorization",required = false) String authHeader,
             @PathVariable Long id,
             @Valid @RequestBody StudentDTO dto){
 
-        jwtService.validateToken(authHeader); // Auth check
 
         Student update= service.updateStudent(id,dto);
         Map<String,Object> response = new LinkedHashMap<>();
@@ -166,11 +158,8 @@ public class StudentController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Map<String,Object>> searchStudent(
-            @RequestHeader(value="Authorization",required = false) String authHeader,
-            @RequestParam String name){
-        // Auth check
-        jwtService.validateToken(authHeader);
+    public ResponseEntity<Map<String,Object>> searchStudent(@RequestParam String name){
+
 
          List<Student> students = service.searchByName(name);
 
@@ -196,11 +185,9 @@ public class StudentController {
 
     @GetMapping("/page")
     public ResponseEntity<Map<String,Object>> getStudentsWithPagination(
-            @RequestHeader(value="Authorization",required = false) String authHeader,
             @RequestParam int page,
             @RequestParam int size){
-        // Auth check
-        jwtService.validateToken(authHeader);
+
 
         if(page < 0 || size < 0){
             Map<String,Object> response = new LinkedHashMap<>();
