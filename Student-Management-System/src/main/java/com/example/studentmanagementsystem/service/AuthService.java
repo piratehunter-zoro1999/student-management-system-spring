@@ -12,7 +12,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
-    AuthService(UserRepository userRepository,JwtUtil jwtUtil){
+    public AuthService(UserRepository userRepository,JwtUtil jwtUtil){
         this.userRepository=userRepository;
         this.jwtUtil=jwtUtil;
     }

@@ -2,6 +2,7 @@ package com.example.studentmanagementsystem.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name="users")
@@ -14,7 +15,8 @@ public class User {
     private String username;
     @NotBlank
     private String password;
-    @NotBlank
+    @NotNull
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     public void setId(Long id) {

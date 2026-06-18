@@ -25,6 +25,7 @@ public class AuthController {
     @PostMapping("/login")
     public Map<String,Object> login(@RequestBody LoginRequest request){
 
+
         String token = authService.authenticate(request);
 
         Map<String,Object> response = new LinkedHashMap<>();
