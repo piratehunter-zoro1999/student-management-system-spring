@@ -1,5 +1,6 @@
 package com.example.studentmanagementsystem.security;
 
+import com.example.studentmanagementsystem.model.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -15,9 +16,10 @@ public class JwtUtil {
     private final Key SECRET_KEY = Keys.hmacShaKeyFor("mysecretkeymysecretkeymysecretkey".getBytes());
 
     // Generate token
-    public String generateToken(String username){
+    public String generateToken(String username , Role role){
         return Jwts.builder()
                 .setSubject(username)
+                .claim("role",role.name())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour
                 .signWith(SECRET_KEY)
@@ -27,6 +29,11 @@ public class JwtUtil {
     // Extract username
     public String extractUsername(String token){
         return extractClaims(token).getSubject();
+    }
+
+    // Extract role
+    public String extractRole(String token){
+        return extractClaims(token).get("role",String.class);
     }
 
     //Extract all claims
