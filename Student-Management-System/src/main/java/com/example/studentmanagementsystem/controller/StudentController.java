@@ -25,6 +25,10 @@ import java.util.Map;
 @RequestMapping ("/students")
 public class StudentController {
 
+    @GetMapping("/test")
+    public String studentTest(){
+        return "Student Access Granted";
+    }
 
     @Autowired
     private StudentService service;

@@ -27,5 +27,27 @@ public class DataInitializer implements CommandLineRunner {
 
            userRepository.save(user);
        }
+
+       User teacher = userRepository.findByUsername("teacher1");
+
+       if(teacher == null){
+           User user = new User();
+           user.setUsername("teacher1");
+           user.setPassword("1234");
+           user.setRole(Role.TEACHER);
+
+           userRepository.save(user);
+       }
+
+        User student = userRepository.findByUsername("student1");
+
+        if(student == null){
+            User user = new User();
+            user.setUsername("student1");
+            user.setPassword("1234");
+            user.setRole(Role.STUDENT);
+
+            userRepository.save(user);
+        }
     }
 }
