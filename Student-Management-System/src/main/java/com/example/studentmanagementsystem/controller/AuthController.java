@@ -1,8 +1,11 @@
 package com.example.studentmanagementsystem.controller;
 
 import com.example.studentmanagementsystem.dto.LoginRequest;
+import com.example.studentmanagementsystem.dto.RegisterRequest;
+import com.example.studentmanagementsystem.dto.RegisterResponse;
 import com.example.studentmanagementsystem.security.JwtUtil;
 import com.example.studentmanagementsystem.service.AuthService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -34,4 +37,17 @@ public class AuthController {
 
         return response;
     }
+
+    @PostMapping("/register")
+    public ResponseEntity<Map<String,Object>> register(@RequestBody RegisterRequest request){
+        Map<String,Object> response = new LinkedHashMap<>();
+
+        RegisterResponse user = authService.register(request);
+        response.put("status","success");
+        response.put("message","user registered successfully!");
+        response.put("data",user);
+
+        return ResponseEntity.ok(response);
+    }
+
 }

@@ -29,7 +29,7 @@ public class SecurityConfig {
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login")
+                        .requestMatchers("/auth/**")
                         .permitAll()
 
                         .requestMatchers("/admin/**")

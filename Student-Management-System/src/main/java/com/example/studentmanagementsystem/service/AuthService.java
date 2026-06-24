@@ -2,6 +2,7 @@ package com.example.studentmanagementsystem.service;
 
 import com.example.studentmanagementsystem.dto.LoginRequest;
 import com.example.studentmanagementsystem.dto.RegisterRequest;
+import com.example.studentmanagementsystem.dto.RegisterResponse;
 import com.example.studentmanagementsystem.model.Role;
 import com.example.studentmanagementsystem.model.User;
 import com.example.studentmanagementsystem.repository.UserRepository;
@@ -40,4 +41,29 @@ public class AuthService {
         return token;
     }
 
+    public RegisterResponse register(RegisterRequest request){
+
+        User existingUser = userRepository.findByUsername(request.getUsername());
+
+        if(existingUser != null){
+            throw new RuntimeException("username already exist!");
+        }
+
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        // default
+        user.setRole(Role.STUDENT);
+
+        userRepository.save(user);
+
+        RegisterResponse response = new RegisterResponse();
+
+        response.setUsername(user.getUsername());
+        response.setRole(user.getRole());
+
+        return response;
+
+
+    }
 }
