@@ -4,15 +4,18 @@ import com.example.studentmanagementsystem.model.Role;
 import com.example.studentmanagementsystem.model.User;
 import com.example.studentmanagementsystem.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public DataInitializer(UserRepository userRepository){
+    public DataInitializer(UserRepository userRepository,PasswordEncoder passwordEncoder){
         this.userRepository=userRepository;
+        this.passwordEncoder=passwordEncoder;
     }
 
     @Override
@@ -22,7 +25,7 @@ public class DataInitializer implements CommandLineRunner {
        if(admin == null){
            User user = new User();
            user.setUsername("admin");
-           user.setPassword("1234");
+           user.setPassword(passwordEncoder.encode("1234"));
            user.setRole(Role.ADMIN);
 
            userRepository.save(user);
@@ -33,7 +36,7 @@ public class DataInitializer implements CommandLineRunner {
        if(teacher == null){
            User user = new User();
            user.setUsername("teacher1");
-           user.setPassword("1234");
+           user.setPassword(passwordEncoder.encode("1234"));
            user.setRole(Role.TEACHER);
 
            userRepository.save(user);
@@ -44,7 +47,7 @@ public class DataInitializer implements CommandLineRunner {
         if(student == null){
             User user = new User();
             user.setUsername("student1");
-            user.setPassword("1234");
+            user.setPassword(passwordEncoder.encode("1234"));
             user.setRole(Role.STUDENT);
 
             userRepository.save(user);
