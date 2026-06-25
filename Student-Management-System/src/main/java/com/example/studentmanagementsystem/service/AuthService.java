@@ -1,5 +1,6 @@
 package com.example.studentmanagementsystem.service;
 
+import com.example.studentmanagementsystem.dto.CurrentUserResponse;
 import com.example.studentmanagementsystem.dto.LoginRequest;
 import com.example.studentmanagementsystem.dto.RegisterRequest;
 import com.example.studentmanagementsystem.dto.RegisterResponse;
@@ -7,6 +8,8 @@ import com.example.studentmanagementsystem.model.Role;
 import com.example.studentmanagementsystem.model.User;
 import com.example.studentmanagementsystem.repository.UserRepository;
 import com.example.studentmanagementsystem.security.JwtUtil;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -65,5 +68,25 @@ public class AuthService {
         return response;
 
 
+    }
+    public CurrentUserResponse getCurrentUser(){
+        Authentication authentication=
+                SecurityContextHolder
+                .getContext().getAuthentication();
+
+        String username = authentication.getName();
+
+        User user = userRepository.findByUsername(username);
+
+        if(user == null){
+            throw new RuntimeException("user not found!");
+        }
+
+        CurrentUserResponse response = new CurrentUserResponse();
+
+        response.setUsername(user.getUsername());
+        response.setRole(user.getRole());
+
+        return response;
     }
 }
