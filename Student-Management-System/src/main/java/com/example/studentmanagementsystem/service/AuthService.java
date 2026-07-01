@@ -4,6 +4,9 @@ import com.example.studentmanagementsystem.dto.CurrentUserResponse;
 import com.example.studentmanagementsystem.dto.LoginRequest;
 import com.example.studentmanagementsystem.dto.RegisterRequest;
 import com.example.studentmanagementsystem.dto.RegisterResponse;
+import com.example.studentmanagementsystem.exception.InvalidCredentialsException;
+import com.example.studentmanagementsystem.exception.UserNotFoundException;
+import com.example.studentmanagementsystem.exception.UsernameAlreadyExistsException;
 import com.example.studentmanagementsystem.model.Role;
 import com.example.studentmanagementsystem.model.User;
 import com.example.studentmanagementsystem.repository.UserRepository;
@@ -33,12 +36,13 @@ public class AuthService {
         User user = userRepository.findByUsername(request.getUsername());
 
         if(user == null){
-            throw new RuntimeException("invalid credentials");
+            throw new InvalidCredentialsException("Invalid credentials");
         }
 
-        if(!passwordEncoder.matches(request.getPassword(),user.getPassword())){
-            throw new RuntimeException("invalid password!");
+        if(!passwordEncoder.matches(request.getPassword(),user.getPassword())) {
+            throw new InvalidCredentialsException("Invalid credentials");
         }
+
         String token = jwtUtil.generateToken(user.getUsername(),user.getRole());
 
         return token;
@@ -49,7 +53,7 @@ public class AuthService {
         User existingUser = userRepository.findByUsername(request.getUsername());
 
         if(existingUser != null){
-            throw new RuntimeException("username already exist!");
+            throw new UsernameAlreadyExistsException("username already exist!");
         }
 
         User user = new User();
@@ -79,7 +83,7 @@ public class AuthService {
         User user = userRepository.findByUsername(username);
 
         if(user == null){
-            throw new RuntimeException("user not found!");
+            throw new UserNotFoundException("user not found!");
         }
 
         CurrentUserResponse response = new CurrentUserResponse();
