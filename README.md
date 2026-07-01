@@ -179,7 +179,6 @@ Authorization: Bearer <JWT_TOKEN>
 | PUT | /students/{id} | ADMIN |
 | DELETE | /students/{id} | ADMIN |
 
-> *(Update this table if your access rules differ.)*
 
 ---
 
