@@ -1,9 +1,6 @@
 package com.example.studentmanagementsystem.service;
 
-import com.example.studentmanagementsystem.dto.CurrentUserResponse;
-import com.example.studentmanagementsystem.dto.LoginRequest;
-import com.example.studentmanagementsystem.dto.RegisterRequest;
-import com.example.studentmanagementsystem.dto.RegisterResponse;
+import com.example.studentmanagementsystem.dto.*;
 import com.example.studentmanagementsystem.exception.InvalidCredentialsException;
 import com.example.studentmanagementsystem.exception.UserNotFoundException;
 import com.example.studentmanagementsystem.exception.UsernameAlreadyExistsException;
@@ -15,6 +12,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Service
 public class AuthService {
@@ -31,7 +31,7 @@ public class AuthService {
         this.passwordEncoder=passwordEncoder;
     }
 
-    public String authenticate(LoginRequest request){
+    public LoginResponse authenticate(LoginRequest request){
 
         User user = userRepository.findByUsername(request.getUsername());
 
@@ -45,7 +45,10 @@ public class AuthService {
 
         String token = jwtUtil.generateToken(user.getUsername(),user.getRole());
 
-        return token;
+        LoginResponse response = new LoginResponse();
+        response.setToken(token);
+
+        return response;
     }
 
     public RegisterResponse register(RegisterRequest request){

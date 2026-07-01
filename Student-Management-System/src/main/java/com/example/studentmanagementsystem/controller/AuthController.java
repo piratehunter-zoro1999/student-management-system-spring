@@ -1,10 +1,6 @@
 package com.example.studentmanagementsystem.controller;
 
-import com.example.studentmanagementsystem.dto.CurrentUserResponse;
-import com.example.studentmanagementsystem.dto.LoginRequest;
-import com.example.studentmanagementsystem.dto.RegisterRequest;
-import com.example.studentmanagementsystem.dto.RegisterResponse;
-import com.example.studentmanagementsystem.security.JwtUtil;
+import com.example.studentmanagementsystem.dto.*;
 import com.example.studentmanagementsystem.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,16 +23,18 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public Map<String,Object> login(@RequestBody LoginRequest request){
+    public ResponseEntity<Map<String,Object>> login(@RequestBody LoginRequest request){
 
 
-        String token = authService.authenticate(request);
+        LoginResponse loginResponse = authService.authenticate(request);
 
         Map<String,Object> response = new LinkedHashMap<>();
 
-        response.put("token",token);
+        response.put("status","success");
+        response.put("message","Login successful");
+        response.put("data",loginResponse);
 
-        return response;
+        return ResponseEntity.status(200).body(response);
     }
 
     @PostMapping("/register")
