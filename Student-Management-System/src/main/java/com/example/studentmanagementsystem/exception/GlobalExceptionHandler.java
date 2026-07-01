@@ -14,7 +14,7 @@ public class GlobalExceptionHandler {
     public Map<String, Object> handleValidation(MethodArgumentNotValidException ex) {
 
         Map<String, Object> response = new LinkedHashMap<>();
-        response.put("status", "fail");
+        response.put("status", "error");
         response.put("message", "Validation failed");
 
         Map<String, String> errors = new LinkedHashMap<>();
@@ -32,10 +32,45 @@ public class GlobalExceptionHandler {
     public ResponseEntity< Map<String,Object>> handleJwtException(
             JwtAuthenticationException ex){
         Map<String,Object> response = new LinkedHashMap<>();
-        response.put("status","fail");
+        response.put("status","error");
         response.put("message",ex.getMessage());
         response.put("data",null);
 
         return ResponseEntity.status(401).body(response);
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity< Map<String,Object>> handleInvalidException(
+            InvalidCredentialsException ex){
+        Map<String,Object> response = new LinkedHashMap<>();
+        response.put("status","error");
+        response.put("message",ex.getMessage());
+        response.put("data",null);
+
+        return ResponseEntity.status(401).body(response);
+    }
+
+    @ExceptionHandler(UsernameAlreadyExistsException.class)
+    public ResponseEntity<Map<String,Object>> handleUsernameExistException(
+            UsernameAlreadyExistsException ex
+    ){
+        Map<String ,Object> response = new LinkedHashMap<>();
+        response.put("status","error");
+        response.put("message",ex.getMessage());
+        response.put("data",null);
+
+        return ResponseEntity.status(409).body(response);
+    }
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Map<String,Object>> handleUserNotFoundException(
+            UserNotFoundException ex
+    ){
+        Map<String ,Object> response = new LinkedHashMap<>();
+        response.put("status","error");
+        response.put("message",ex.getMessage());
+        response.put("data",null);
+
+        return ResponseEntity.status(404).body(response);
+
     }
 }
