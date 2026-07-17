@@ -6,6 +6,8 @@ import com.example.studentmanagementsystem.mapper.StudentMapper;
 import com.example.studentmanagementsystem.model.Student;
 import com.example.studentmanagementsystem.security.JwtService;
 import com.example.studentmanagementsystem.service.StudentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +20,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+@Tag(
+        name="students",
+        description = "APIs for managing student records,including create,retrieve,update,delete,search and pagination"
+)
 @RestController
 @RequestMapping ("/students")
 public class StudentController {
@@ -33,7 +39,10 @@ public class StudentController {
     @Autowired
     private JwtService jwtService;
 
-
+    @Operation(
+            summary = "Create a new student",
+            description = "Creates a new student record and returns the registered student's information upon successful creation."
+    )
     @PostMapping
     public ResponseEntity<Map<String,Object>> addStudent(
 
@@ -54,6 +63,10 @@ public class StudentController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(
+            summary ="Retrieves all students",
+            description = "Returns a list of all registered students"
+    )
     @GetMapping
     public ResponseEntity<Map<String,Object>> getAllStudents(){
 
@@ -84,6 +97,10 @@ public class StudentController {
 
     }
 
+    @Operation(
+            summary = "Retrieve a student by ID",
+            description = "Returns details of the student for the specified ID"
+    )
     @GetMapping("/{id}")
     public ResponseEntity<Map<String,Object>> getById(@PathVariable Long id){
 
@@ -109,7 +126,10 @@ public class StudentController {
             return ResponseEntity.status(404).body(response);
         }
     }
-
+   @Operation(
+           summary = "Deletes student by ID",
+           description = "Deletes student records for the specified ID "
+   )
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String,Object>> delete(@PathVariable Long id){
 
@@ -131,6 +151,11 @@ public class StudentController {
         }
 
     }
+
+    @Operation(
+            summary = "Update student by ID",
+            description = "Updates student details for the specified ID"
+    )
     @PutMapping("/{id}")
     public ResponseEntity<Map<String,Object>> updateStudent(
             @PathVariable Long id,
@@ -158,6 +183,10 @@ public class StudentController {
 
     }
 
+    @Operation(
+            summary = "Search students by name",
+            description = "Returns a list of students whose names match the specified search keyword."
+    )
     @GetMapping("/search")
     public ResponseEntity<Map<String,Object>> searchStudent(@RequestParam String name){
 
@@ -184,6 +213,10 @@ public class StudentController {
          return ResponseEntity.ok(response);
     }
 
+    @Operation(
+            summary = "Retrieve students with pagination",
+            description = "Returns a paginated list of registered students based on the requested page number and page size."
+    )
     @GetMapping("/page")
     public ResponseEntity<Map<String,Object>> getStudentsWithPagination(
             @RequestParam int page,

@@ -2,6 +2,8 @@ package com.example.studentmanagementsystem.controller;
 
 import com.example.studentmanagementsystem.dto.*;
 import com.example.studentmanagementsystem.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,6 +11,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Tag(
+        name = "Authentication",
+        description = "APIs for user registration, login and authenticated user information."
+)
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -21,7 +27,10 @@ public class AuthController {
 
 
 
-
+    @Operation(
+            summary = "Authenticate user",
+            description = "Authenticates a user using username and password and returns a JWT access token upon successful authentication."
+    )
     @PostMapping("/login")
     public ResponseEntity<Map<String,Object>> login(@RequestBody LoginRequest request){
 
@@ -37,6 +46,10 @@ public class AuthController {
         return ResponseEntity.status(200).body(response);
     }
 
+    @Operation(
+            summary ="Register a new user",
+            description = "Registers a new user using username and password.Return registered user's information,including username and role on successful registration "
+    )
     @PostMapping("/register")
     public ResponseEntity<Map<String,Object>> register(@RequestBody RegisterRequest request){
         Map<String,Object> response = new LinkedHashMap<>();
@@ -49,6 +62,10 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(
+            summary = "Get current user",
+            description = "Return the authenticated user information,including username and role."
+    )
     @GetMapping("/me")
     public ResponseEntity<Map<String,Object>> getCurrentUser(){
         Map<String,Object> response = new LinkedHashMap<>();
