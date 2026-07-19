@@ -10,7 +10,7 @@ import java.util.*;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, Object> handleValidation(MethodArgumentNotValidException ex) {
+    public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException ex) {
 
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("status", "error");
@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
 
         response.put("errors", errors);
 
-        return response;
+        return ResponseEntity.badRequest().body(response);
     }
 
     @ExceptionHandler(JwtAuthenticationException.class)
