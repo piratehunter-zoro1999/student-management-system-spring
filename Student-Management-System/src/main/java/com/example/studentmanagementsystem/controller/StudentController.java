@@ -6,7 +6,11 @@ import com.example.studentmanagementsystem.mapper.StudentMapper;
 import com.example.studentmanagementsystem.model.Student;
 import com.example.studentmanagementsystem.security.JwtService;
 import com.example.studentmanagementsystem.service.StudentService;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +32,7 @@ import java.util.Map;
 @RequestMapping ("/students")
 public class StudentController {
 
+    @Hidden
     @GetMapping("/test")
     public String studentTest(){
         return "Student Access Granted";
@@ -39,11 +44,25 @@ public class StudentController {
     @Autowired
     private JwtService jwtService;
 
+    @PostMapping
     @Operation(
             summary = "Create a new student",
             description = "Creates a new student record and returns the registered student's information upon successful creation."
     )
-    @PostMapping
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Student created successfully."
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid student data."
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized. A valid JWT access token is required."
+            )
+    })
     public ResponseEntity<Map<String,Object>> addStudent(
 
             @Valid @RequestBody StudentDTO dto){
@@ -63,11 +82,21 @@ public class StudentController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping
     @Operation(
             summary ="Retrieves all students",
             description = "Returns a list of all registered students"
     )
-    @GetMapping
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Students retrieved successfully."
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized. A valid JWT access token is required."
+            )
+    })
     public ResponseEntity<Map<String,Object>> getAllStudents(){
 
 
@@ -97,14 +126,31 @@ public class StudentController {
 
     }
 
+    @GetMapping("/{id}")
     @Operation(
             summary = "Retrieve a student by ID",
             description = "Returns details of the student for the specified ID"
     )
-    @GetMapping("/{id}")
-    public ResponseEntity<Map<String,Object>> getById(@PathVariable Long id){
-
-
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Student retrieved successfully."
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized. A valid JWT access token is required."
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Student not found."
+            )
+    })
+    public ResponseEntity<Map<String,Object>> getById(
+            @Parameter(
+                    description = "Unique ID of student.",
+                    example = "1"
+            )
+            @PathVariable Long id){
 
 
         Student s = service.getStudentById(id);
@@ -126,12 +172,31 @@ public class StudentController {
             return ResponseEntity.status(404).body(response);
         }
     }
-   @Operation(
+    @DeleteMapping("/{id}")
+    @Operation(
            summary = "Deletes student by ID",
            description = "Deletes student records for the specified ID "
-   )
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String,Object>> delete(@PathVariable Long id){
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Student deleted successfully."
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized. A valid JWT access token is required."
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Student not found."
+            )
+    })
+    public ResponseEntity<Map<String,Object>> delete(
+            @Parameter(
+                    description = "Unique ID of student.",
+                    example = "1"
+            )
+            @PathVariable Long id){
 
 
 
@@ -152,12 +217,34 @@ public class StudentController {
 
     }
 
+    @PutMapping("/{id}")
     @Operation(
             summary = "Update student by ID",
             description = "Updates student details for the specified ID"
     )
-    @PutMapping("/{id}")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Student updated successfully."
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized. A valid JWT access token is required."
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid student data."
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Student not found."
+            )
+    })
     public ResponseEntity<Map<String,Object>> updateStudent(
+            @Parameter(
+                    description = "Unique ID of student.",
+                    example = "1"
+            )
             @PathVariable Long id,
             @Valid @RequestBody StudentDTO dto){
 
@@ -183,12 +270,27 @@ public class StudentController {
 
     }
 
+    @GetMapping("/search")
     @Operation(
             summary = "Search students by name",
             description = "Returns a list of students whose names match the specified search keyword."
     )
-    @GetMapping("/search")
-    public ResponseEntity<Map<String,Object>> searchStudent(@RequestParam String name){
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Students retrieved successfully."
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized. A valid JWT access token is required."
+            )
+    })
+    public ResponseEntity<Map<String,Object>> searchStudent(
+            @Parameter(
+                    description = "Starting name or partial name used for searching.",
+                    example = "rahul"
+            )
+            @RequestParam String name){
 
 
          List<Student> students = service.searchByName(name);
@@ -213,13 +315,37 @@ public class StudentController {
          return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/page")
     @Operation(
             summary = "Retrieve students with pagination",
             description = "Returns a paginated list of registered students based on the requested page number and page size."
     )
-    @GetMapping("/page")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Student retrieved successfully."
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized. A valid JWT access token is required."
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid page number or page size."
+            )
+
+    })
     public ResponseEntity<Map<String,Object>> getStudentsWithPagination(
+            @Parameter(
+                    description = "Page number (starts from 0).",
+                    example = "0"
+            )
             @RequestParam int page,
+            @Parameter(
+                    description = "Number of students to return per page.",
+                    example = "10"
+
+            )
             @RequestParam int size){
 
 
